@@ -2,6 +2,8 @@
 
 This project is an email microservice that distributes load among three services using a flag-based distribution mode. The load ratio is configurable and can be set according to the desired balance of requests among the services. Additionally, the service can be run in mock mode, which is controlled by a mock flag.
 
+![](Architecture.PNG)
+
 ## Services
 
 The email microservice utilizes three separate services to distribute load:
