@@ -31,7 +31,12 @@ class EmailService {
         }else{
             ({service, ...content} = body);
         }
-        return await serviceObj[service].sendMail(content)
+         let res = await serviceObj[service].sendMail(content)
+         if(res && !res.success){
+            res = await this.retryEmail(service,content)
+         }
+         return res
+
     }
 
     getRouteService() {
@@ -58,6 +63,22 @@ class EmailService {
         }
 
         return serviceWithMaxAccWeight.serviceName;
+    }
+
+    async retryEmail(currentService, content){
+        console.log(`current : ${currentService}`);
+        let res
+        for (const service of Object.keys(services)) {     
+            if(service !== currentService){
+                console.log(`cur: ${service}`);
+                res =  await serviceObj[service].sendMail(content)
+                if(res.message === "success" || res.success === true){
+                   return res
+                 }
+            }
+        }
+        res = {success: false, message: `Failed to send Email via ${currentService}`};
+        return res
     }
 
 
